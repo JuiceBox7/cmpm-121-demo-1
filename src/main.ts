@@ -17,6 +17,7 @@ app.append(score);
 
 const increaseButton: HTMLButtonElement = document.createElement("button");
 increaseButton.innerHTML = `🌮`;
+app.append(increaseButton);
 
 increaseButton.addEventListener("click", function handleClick(event) {
   console.log("button was clicked");
@@ -25,4 +26,9 @@ increaseButton.addEventListener("click", function handleClick(event) {
   score.innerHTML = `🌮's: ${counter}`;
 });
 
-app.append(increaseButton);
+function passiveIncrease(): void {
+  counter++;
+  score.innerHTML = `🌮's: ${counter}`;
+}
+
+setInterval(passiveIncrease, 1000);
