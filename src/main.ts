@@ -13,9 +13,9 @@ app.append(header);
 const increaseButton: HTMLButtonElement = document.createElement("button");
 increaseButton.innerHTML = `🌮`;
 
-increaseButton.addEventListener('click', function handleClick(event) {
-    console.log('button was clicked');
-    console.log(event);
+increaseButton.addEventListener("click", function handleClick(event) {
+  console.log("button was clicked");
+  console.log(event);
 });
 
 app.append(increaseButton);
