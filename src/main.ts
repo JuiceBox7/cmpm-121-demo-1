@@ -17,5 +17,4 @@ increaseButton.addEventListener("click", function handleClick(event) {
   console.log("button was clicked");
   console.log(event);
 });
-
 app.append(increaseButton);
