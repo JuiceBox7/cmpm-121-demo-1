@@ -17,16 +17,29 @@ app.append(score);
 
 const increaseButton: HTMLButtonElement = document.createElement("button");
 increaseButton.innerHTML = `🌮`;
+const passiveUpgradeButton: HTMLButtonElement =
+  document.createElement("button");
+passiveUpgradeButton.innerHTML = "Earn a 🌮 every second! Cost: 10 🌮";
 app.append(increaseButton);
+app.append(passiveUpgradeButton);
+passiveUpgradeButton.disabled = true;
 
 increaseButton.addEventListener("click", function handleClick(event) {
   console.log("button was clicked");
   console.log(event);
   counter++;
   score.innerHTML = `🌮's: ${counter}`;
+  if (counter >= 10) passiveUpgradeButton.disabled = false;
+  else passiveUpgradeButton.disabled = true;
 });
 
-function passiveIncrease(): void {
+passiveUpgradeButton.addEventListener("click", function handleClick(event) {
+  console.log("upgrade was purchased");
+  console.log(event);
+  passiveUpgradeButton.innerHTML = "Purchased!";
+});
+
+function passive(): void {
   counter++;
   score.innerHTML = `🌮's: ${counter}`;
 }
@@ -48,10 +61,10 @@ function step(timeStamp: number) {
   }
 
   // then, count frames up to a second, and increase counter
-  if (elapsed > 1000) {
+  if (elapsed > 1000 && !passiveUpgradeButton.disabled) {
     frameCounter += 1 / fps;
     if (frameCounter > 1) {
-      passiveIncrease();
+      passive();
       frameCounter = 0;
     }
   }
