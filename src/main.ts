@@ -31,4 +31,31 @@ function passiveIncrease(): void {
   score.innerHTML = `🌮's: ${counter}`;
 }
 
-setInterval(passiveIncrease, 1000);
+let start: number,
+  fps: number = 0,
+  frameCounter: number = 0;
+
+function step(timeStamp: number) {
+  if (start === undefined) {
+    start = timeStamp;
+  }
+  // track amount of time passed
+  const elapsed = timeStamp - start;
+
+  // once a minute has passed, log the fps
+  if (elapsed < 1000) {
+    fps++;
+  }
+
+  // then, count frames up to a second, and increase counter
+  if (elapsed > 1000) {
+    frameCounter += 1 / fps;
+    if (frameCounter > 1) {
+      passiveIncrease();
+      frameCounter = 0;
+    }
+  }
+  window.requestAnimationFrame(step);
+}
+
+window.requestAnimationFrame(step);
