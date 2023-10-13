@@ -25,28 +25,36 @@ class upgrade {
   name: string = "";
   isOwned: boolean = false;
   cost: number = 0;
-  ogRate: number = 0;
   rate: number = 0;
   TPSCounter: number = 0;
   button?: HTMLButtonElement;
 }
 
+interface Item {
+  name: string;
+  cost: number;
+  rate: number;
+}
+
+const availableItems: Item[] = [
+  { name: "Chef 👨‍🍳", cost: 10, rate: 0.1 },
+  { name: "Taqueria 👨‍🍳🔪👩‍🍳🔪", cost: 100, rate: 2 },
+  { name: "Taco Truck 🛻", cost: 1000, rate: 50 },
+];
+
 const chef = new upgrade();
 chef.name = "Chef 👨‍🍳";
 chef.cost = 10;
-chef.ogRate = 0.1;
 chef.rate = 0.1;
 
 const kitchen = new upgrade();
 kitchen.name = "Taqueria 👨‍🍳🔪👩‍🍳🔪";
 kitchen.cost = 100;
-kitchen.ogRate = 2;
 kitchen.rate = 2;
 
 const truck = new upgrade();
 truck.name = "Taco Truck 🛻";
 truck.cost = 1000;
-truck.ogRate = 50;
 truck.rate = 50;
 
 const upgrades: Array<upgrade> = [chef, kitchen, truck];
@@ -57,17 +65,17 @@ app.append(increaseButton);
 
 const chefUpgrade: HTMLButtonElement = document.createElement("button");
 chef.button = chefUpgrade;
-chefUpgrade.innerHTML = `${chef.name} Cost: ${chef.cost} 🌮 (${chef.rate}) `;
+chefUpgrade.innerHTML = `${availableItems[0].name} Cost: ${availableItems[0].cost} 🌮 (${availableItems[0].rate}) `;
 app.append(chefUpgrade);
 
 const kitchenUpgrade: HTMLButtonElement = document.createElement("button");
 kitchen.button = kitchenUpgrade;
-kitchenUpgrade.innerHTML = `${kitchen.name} Cost: ${kitchen.cost} 🌮 (${kitchen.rate})`;
+kitchenUpgrade.innerHTML = `${availableItems[1].name} Cost: ${availableItems[1].cost} 🌮 (${availableItems[1].rate})`;
 app.append(kitchenUpgrade);
 
 const truckUpgrade: HTMLButtonElement = document.createElement("button");
 truck.button = truckUpgrade;
-truckUpgrade.innerHTML = `${truck.name} Cost: ${truck.cost} 🌮 (${truck.rate})`;
+truckUpgrade.innerHTML = `${availableItems[2].name} Cost: ${availableItems[2].cost} 🌮 (${availableItems[2].rate})`;
 app.append(truckUpgrade);
 
 increaseButton.addEventListener("click", function handleClick(event) {
@@ -99,7 +107,6 @@ function update(upgrade: upgrade): void {
   upgrade.isOwned = true;
   counter = minusFloat(counter, upgrade.cost);
   rate = addFloat(rate, upgrade.rate);
-  upgrade.rate = addFloat(upgrade.rate, upgrade.ogRate);
   upgrade.cost = multiplyFloat(upgrade.cost, 1.15);
   TPS.innerHTML = `TPS: ${rate.toFixed(1)}`;
   score.innerHTML = `${counter.toFixed(1)} 🌮`;
