@@ -22,61 +22,79 @@ TPS.innerHTML = `TPS: ${rate}`;
 app.append(TPS);
 
 class upgrade {
-  name: string = "";
+  name: string;
   isOwned: boolean = false;
-  cost: number = 0;
-  rate: number = 0;
+  cost: number;
+  rate: number;
   TPSCounter: number = 0;
   button?: HTMLButtonElement;
+  description: string;
+
+  constructor(
+    name: string,
+    cost: number,
+    rate: number,
+    description: string,
+    button: HTMLButtonElement,
+  ) {
+    this.name = name;
+    this.cost = cost;
+    this.rate = rate;
+    this.description = description;
+    this.button = button;
+  }
 }
 
 interface Item {
   name: string;
   cost: number;
   rate: number;
+  description: string;
 }
 
 const availableItems: Item[] = [
-  { name: "Chef 👨‍🍳", cost: 10, rate: 0.1 },
-  { name: "Taqueria 👨‍🍳🔪👩‍🍳🔪", cost: 100, rate: 2 },
-  { name: "Taco Truck 🛻", cost: 1000, rate: 50 },
+  {
+    name: "Chef 👨‍🍳",
+    cost: 10,
+    rate: 0.1,
+    description: "A set of working hands",
+  },
+  {
+    name: "Taqueria 👨‍🍳🔪👩‍🍳🔪",
+    cost: 100,
+    rate: 2,
+    description: "A bustling restaurant",
+  },
+  {
+    name: "Taco Truck 🛻",
+    cost: 1000,
+    rate: 50,
+    description: "An uber popular Taco Truck",
+  },
 ];
-
-const chef = new upgrade();
-chef.name = "Chef 👨‍🍳";
-chef.cost = 10;
-chef.rate = 0.1;
-
-const kitchen = new upgrade();
-kitchen.name = "Taqueria 👨‍🍳🔪👩‍🍳🔪";
-kitchen.cost = 100;
-kitchen.rate = 2;
-
-const truck = new upgrade();
-truck.name = "Taco Truck 🛻";
-truck.cost = 1000;
-truck.rate = 50;
-
-const upgrades: Array<upgrade> = [chef, kitchen, truck];
 
 const increaseButton: HTMLButtonElement = document.createElement("button");
 increaseButton.innerHTML = `🌮`;
 app.append(increaseButton);
 
-const chefUpgrade: HTMLButtonElement = document.createElement("button");
-chef.button = chefUpgrade;
-chefUpgrade.innerHTML = `${availableItems[0].name} Cost: ${availableItems[0].cost} 🌮 (${availableItems[0].rate}) `;
-app.append(chefUpgrade);
+const upgrades: Array<upgrade> = [];
 
-const kitchenUpgrade: HTMLButtonElement = document.createElement("button");
-kitchen.button = kitchenUpgrade;
-kitchenUpgrade.innerHTML = `${availableItems[1].name} Cost: ${availableItems[1].cost} 🌮 (${availableItems[1].rate})`;
-app.append(kitchenUpgrade);
-
-const truckUpgrade: HTMLButtonElement = document.createElement("button");
-truck.button = truckUpgrade;
-truckUpgrade.innerHTML = `${availableItems[2].name} Cost: ${availableItems[2].cost} 🌮 (${availableItems[2].rate})`;
-app.append(truckUpgrade);
+availableItems.forEach((item) => {
+  const upgradeButton: HTMLButtonElement = document.createElement("button");
+  upgradeButton.innerHTML = `${item.name} Cost: ${item.cost} 🌮 ${item.rate} <br> ${item.description}`;
+  app.append(upgradeButton);
+  const upgradeItem = new upgrade(
+    item.name,
+    item.cost,
+    item.rate,
+    item.description,
+    upgradeButton,
+  );
+  upgrades.push(upgradeItem);
+  upgradeButton.addEventListener("click", () => {
+    update(upgradeItem);
+  });
+});
 
 increaseButton.addEventListener("click", function handleClick(event) {
   console.log("Taco button was clicked");
@@ -85,34 +103,16 @@ increaseButton.addEventListener("click", function handleClick(event) {
   score.innerHTML = `${counter.toFixed(1)} 🌮`;
 });
 
-chefUpgrade.addEventListener("click", function handleClick(event) {
-  console.log("Chef upgrade was purchased");
-  console.log(event);
-  update(chef);
-});
-
-kitchenUpgrade.addEventListener("click", function handleClick(event) {
-  console.log("Taqueria upgrade was purchased");
-  console.log(event);
-  update(kitchen);
-});
-
-truckUpgrade.addEventListener("click", function handleClick(event) {
-  console.log("Taco Truck was purchased");
-  console.log(event);
-  update(truck);
-});
-
-function update(upgrade: upgrade): void {
+function update(upgrade: upgrade) {
   upgrade.isOwned = true;
   counter = minusFloat(counter, upgrade.cost);
   rate = addFloat(rate, upgrade.rate);
   upgrade.cost = multiplyFloat(upgrade.cost, 1.15);
   TPS.innerHTML = `TPS: ${rate.toFixed(1)}`;
-  score.innerHTML = `${counter.toFixed(1)} 🌮`;
+  score.innerHTML = `${counter.toFixed(2)} 🌮`;
   upgrade.button!.innerHTML = `${upgrade.name} Cost: ${upgrade.cost.toFixed(
     1,
-  )} 🌮 (${upgrade.rate.toFixed(1)}) `;
+  )} 🌮 ${upgrade.rate.toFixed(1)} <br> ${upgrade.description}`;
 }
 
 function passive(inc: number): void {
@@ -128,6 +128,8 @@ function checkUpgrade(upgrade: upgrade): void {
 function applyUpgrade(upgrade: upgrade): void {
   if (upgrade.isOwned) {
     upgrade.TPSCounter = addFloat(upgrade.TPSCounter, upgrade.rate);
+    console.log(upgrade.name);
+    console.log(upgrade.TPSCounter);
     if (upgrade.TPSCounter >= 1) {
       passive(upgrade.TPSCounter);
       upgrade.TPSCounter = 0;
