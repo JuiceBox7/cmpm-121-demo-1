@@ -14,7 +14,7 @@ let counter = 0;
 let rate = 0;
 
 const score: HTMLDivElement = document.createElement("div");
-score.innerHTML = `🌮's: ${counter}`;
+score.innerHTML = `${counter} 🌮`;
 app.append(score);
 
 const TPS: HTMLDivElement = document.createElement("div");
@@ -38,7 +38,7 @@ chef.ogRate = 0.1;
 chef.rate = 0.1;
 
 const kitchen = new upgrade();
-kitchen.name = "Kitchen 👨‍🍳🔪👩‍🍳🔪";
+kitchen.name = "Taqueria 👨‍🍳🔪👩‍🍳🔪";
 kitchen.cost = 100;
 kitchen.ogRate = 2;
 kitchen.rate = 2;
@@ -57,24 +57,24 @@ app.append(increaseButton);
 
 const chefUpgrade: HTMLButtonElement = document.createElement("button");
 chef.button = chefUpgrade;
-chefUpgrade.innerHTML = `Chef 👨‍🍳 Cost: ${chef.cost} 🌮 (${chef.rate}) `;
+chefUpgrade.innerHTML = `${chef.name} Cost: ${chef.cost} 🌮 (${chef.rate}) `;
 app.append(chefUpgrade);
 
 const kitchenUpgrade: HTMLButtonElement = document.createElement("button");
 kitchen.button = kitchenUpgrade;
-kitchenUpgrade.innerHTML = `Kitchen 👨‍🍳🔪👩‍🍳🔪 Cost: ${kitchen.cost} 🌮 (${kitchen.rate})`;
+kitchenUpgrade.innerHTML = `${kitchen.name} Cost: ${kitchen.cost} 🌮 (${kitchen.rate})`;
 app.append(kitchenUpgrade);
 
 const truckUpgrade: HTMLButtonElement = document.createElement("button");
 truck.button = truckUpgrade;
-truckUpgrade.innerHTML = `Taco Truck 🛻 Cost: ${truck.cost} 🌮 (${truck.rate})`;
+truckUpgrade.innerHTML = `${truck.name} Cost: ${truck.cost} 🌮 (${truck.rate})`;
 app.append(truckUpgrade);
 
 increaseButton.addEventListener("click", function handleClick(event) {
   console.log("Taco button was clicked");
   console.log(event);
   counter++;
-  score.innerHTML = `🌮's: ${counter}`;
+  score.innerHTML = `${counter.toFixed(1)} 🌮`;
 });
 
 chefUpgrade.addEventListener("click", function handleClick(event) {
@@ -84,7 +84,7 @@ chefUpgrade.addEventListener("click", function handleClick(event) {
 });
 
 kitchenUpgrade.addEventListener("click", function handleClick(event) {
-  console.log("Kitchen upgrade was purchased");
+  console.log("Taqueria upgrade was purchased");
   console.log(event);
   update(kitchen);
 });
@@ -101,16 +101,16 @@ function update(upgrade: upgrade): void {
   rate = addFloat(rate, upgrade.rate);
   upgrade.rate = addFloat(upgrade.rate, upgrade.ogRate);
   upgrade.cost = multiplyFloat(upgrade.cost, 1.15);
-  TPS.innerHTML = `TPS: ${rate.toFixed(2)}`;
-  score.innerHTML = `🌮's: ${counter.toFixed(2)}`;
+  TPS.innerHTML = `TPS: ${rate.toFixed(1)}`;
+  score.innerHTML = `${counter.toFixed(1)} 🌮`;
   upgrade.button!.innerHTML = `${upgrade.name} Cost: ${upgrade.cost.toFixed(
-    2,
-  )} 🌮 (${upgrade.rate.toFixed(2)}) `;
+    1,
+  )} 🌮 (${upgrade.rate.toFixed(1)}) `;
 }
 
 function passive(inc: number): void {
   counter += inc;
-  score.innerHTML = `🌮's: ${counter}`;
+  score.innerHTML = `${counter.toFixed(1)} 🌮`;
 }
 
 function checkUpgrade(upgrade: upgrade): void {
