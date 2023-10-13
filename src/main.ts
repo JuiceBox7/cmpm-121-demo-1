@@ -57,19 +57,31 @@ const availableItems: Item[] = [
     name: "Chef 👨‍🍳",
     cost: 10,
     rate: 0.1,
-    description: "A set of working hands",
+    description: "A set of working hands | 0.1 TPS",
   },
   {
     name: "Taqueria 👨‍🍳🔪👩‍🍳🔪",
     cost: 100,
     rate: 2,
-    description: "A bustling restaurant",
+    description: "A bustling restaurant | 2 TPS",
   },
   {
     name: "Taco Truck 🛻",
+    cost: 250,
+    rate: 10,
+    description: "An uber popular Taco Truck | 10 TPS",
+  },
+  {
+    name: "Taco Factory 🏭",
+    cost: 500,
+    rate: 25,
+    description: "A whole factory dedicated to making tacos | 25 TPS",
+  },
+  {
+    name: "Taco-matic 🤖",
     cost: 1000,
     rate: 50,
-    description: "An uber popular Taco Truck",
+    description: "A taco making robot for all your taco making needs | 50 TPS",
   },
 ];
 
