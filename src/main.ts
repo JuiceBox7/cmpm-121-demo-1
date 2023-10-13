@@ -21,20 +21,53 @@ const TPS: HTMLDivElement = document.createElement("div");
 TPS.innerHTML = `TPS: ${rate}`;
 app.append(TPS);
 
+class upgrade {
+  name: string = "";
+  isOwned: boolean = false;
+  cost: number = 0;
+  ogRate: number = 0;
+  rate: number = 0;
+  TPSCounter: number = 0;
+  button?: HTMLButtonElement;
+}
+
+const chef = new upgrade();
+chef.name = "Chef 👨‍🍳";
+chef.cost = 10;
+chef.ogRate = 0.1;
+chef.rate = 0.1;
+
+const kitchen = new upgrade();
+kitchen.name = "Kitchen 👨‍🍳🔪👩‍🍳🔪";
+kitchen.cost = 100;
+kitchen.ogRate = 2;
+kitchen.rate = 2;
+
+const truck = new upgrade();
+truck.name = "Taco Truck 🛻";
+truck.cost = 1000;
+truck.ogRate = 50;
+truck.rate = 50;
+
+const upgrades: Array<upgrade> = [chef, kitchen, truck];
+
 const increaseButton: HTMLButtonElement = document.createElement("button");
 increaseButton.innerHTML = `🌮`;
 app.append(increaseButton);
 
 const chefUpgrade: HTMLButtonElement = document.createElement("button");
-chefUpgrade.innerHTML = "Chef 👨‍🍳 Cost: 10 🌮 (0.1 TPS) ";
+chef.button = chefUpgrade;
+chefUpgrade.innerHTML = `Chef 👨‍🍳 Cost: ${chef.cost} 🌮 (${chef.rate}) `;
 app.append(chefUpgrade);
 
 const kitchenUpgrade: HTMLButtonElement = document.createElement("button");
-kitchenUpgrade.innerHTML = "Kitchen Staff 👨‍🍳🔪👩‍🍳🔪 Cost: 100 🌮 (2.0 TPS)";
+kitchen.button = kitchenUpgrade;
+kitchenUpgrade.innerHTML = `Kitchen 👨‍🍳🔪👩‍🍳🔪 Cost: ${kitchen.cost} 🌮 (${kitchen.rate})`;
 app.append(kitchenUpgrade);
 
 const truckUpgrade: HTMLButtonElement = document.createElement("button");
-truckUpgrade.innerHTML = "Taco Truck 🛻 Cost: 1000 🌮 (50 TPS)";
+truck.button = truckUpgrade;
+truckUpgrade.innerHTML = `Taco Truck 🛻 Cost: ${truck.cost} 🌮 (${truck.rate})`;
 app.append(truckUpgrade);
 
 increaseButton.addEventListener("click", function handleClick(event) {
@@ -62,38 +95,17 @@ truckUpgrade.addEventListener("click", function handleClick(event) {
   update(truck);
 });
 
-class upgrade {
-  isOwned: boolean = false;
-  cost: number = 0;
-  rate: number = 0;
-  TPSCounter: number = 0;
-  button?: HTMLButtonElement;
-}
-
-const chef = new upgrade();
-chef.cost = 10;
-chef.rate = 0.1;
-chef.button = chefUpgrade;
-
-const kitchen = new upgrade();
-kitchen.cost = 100;
-kitchen.rate = 2;
-kitchen.button = kitchenUpgrade;
-
-const truck = new upgrade();
-truck.cost = 1000;
-truck.rate = 50;
-truck.button = truckUpgrade;
-
-const upgrades: Array<upgrade> = [chef, kitchen, truck];
-
-function update(upgrade: upgrade) {
+function update(upgrade: upgrade): void {
   upgrade.isOwned = true;
-  counter -= upgrade.cost;
-  rate += upgrade.rate;
-  TPS.innerHTML = `TPS: ${rate}`;
-  score.innerHTML = `🌮's: ${counter}`;
-  upgrade.button!.innerHTML = "Purchased!";
+  counter = minusFloat(counter, upgrade.cost);
+  rate = addFloat(rate, upgrade.rate);
+  upgrade.rate = addFloat(upgrade.rate, upgrade.ogRate);
+  upgrade.cost = multiplyFloat(upgrade.cost, 1.15);
+  TPS.innerHTML = `TPS: ${rate.toFixed(2)}`;
+  score.innerHTML = `🌮's: ${counter.toFixed(2)}`;
+  upgrade.button!.innerHTML = `${upgrade.name} Cost: ${upgrade.cost.toFixed(
+    2,
+  )} 🌮 (${upgrade.rate.toFixed(2)}) `;
 }
 
 function passive(inc: number): void {
@@ -101,16 +113,14 @@ function passive(inc: number): void {
   score.innerHTML = `🌮's: ${counter}`;
 }
 
-function checkUpgrade(upgrade: upgrade) {
-  if (counter < upgrade.cost || upgrade.isOwned)
-    upgrade.button!.disabled = true;
+function checkUpgrade(upgrade: upgrade): void {
+  if (counter < upgrade.cost) upgrade.button!.disabled = true;
   else upgrade.button!.disabled = false;
 }
 
-function applyUpgrade(upgrade: upgrade) {
+function applyUpgrade(upgrade: upgrade): void {
   if (upgrade.isOwned) {
     upgrade.TPSCounter = addFloat(upgrade.TPSCounter, upgrade.rate);
-    console.log(upgrade.TPSCounter);
     if (upgrade.TPSCounter >= 1) {
       passive(upgrade.TPSCounter);
       upgrade.TPSCounter = 0;
@@ -118,17 +128,29 @@ function applyUpgrade(upgrade: upgrade) {
   }
 }
 
-function addFloat(float1: number, float2: number) {
+function addFloat(float1: number, float2: number): number {
   const a = float1.toString();
   const b = float2.toString();
-  return Number(Math.round((parseFloat(a) + parseFloat(b)) * 100) / 100);
+  return Number(Math.round((parseFloat(a) + parseFloat(b)) * 10) / 10);
 }
 
-let start: number,
-  fps: number = 0,
-  frameCounter: number = 0;
+function multiplyFloat(float1: number, float2: number): number {
+  const a = float1.toString();
+  const b = float2.toString();
+  return Number(Math.round(parseFloat(a) * parseFloat(b) * 10) / 10);
+}
 
-function step(timeStamp: number) {
+function minusFloat(float1: number, float2: number): number {
+  const a = float1.toString();
+  const b = float2.toString();
+  return Number(Math.round((parseFloat(a) - parseFloat(b)) * 10) / 10);
+}
+
+let start: number;
+let fps: number = 0;
+let frameCounter: number = 0;
+
+function step(timeStamp: number): void {
   if (start === undefined) {
     start = timeStamp;
   }
